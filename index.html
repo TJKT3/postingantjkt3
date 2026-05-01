@@ -280,15 +280,27 @@
             margin-top: 4px;
         }
         
-        /* indikator musik nostalgia (hanya dekorasi) */
+        /* indikator musik nostalgia (dekorasi) */
         .music-note {
             text-align: center;
             font-size: 0.75rem;
-            opacity: 0.55;
-            margin-top: 10px;
+            opacity: 0.65;
+            margin: 12px auto 0;
             letter-spacing: 2px;
             font-family: monospace;
             color: #7c623f;
+            background: rgba(252, 240, 220, 0.6);
+            display: inline-block;
+            width: auto;
+            padding: 4px 18px;
+            border-radius: 50px;
+            backdrop-filter: blur(2px);
+        }
+        
+        .music-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.5rem;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
@@ -322,46 +334,109 @@
 </div>
 
 <script>
-    // ======================= MUSIK OTOMATIS (tanpa folder, tanpa tombol) ======================
-    // File musik "music.mp3" berada di direktori yang sama dengan file HTML (sejajar, tidak di dalam folder)
-    // Musik akan mulai otomatis saat halaman dimuat (berusaha semaksimal mungkin mengatasi kebijakan autoplay browser)
-    // Tidak ada kontrol yang ditampilkan ke user.
-    const audio = new Audio('music.mp3');
-    audio.loop = true;      // mengulang untuk nuansa nostalgia panjang
-    audio.volume = 0.55;    // volume lembut dan hangat
+    // ======================= MUSIK UNIVERSAL (Android/iOS + Desktop) ======================
+    // File musik "music.mp3" berada di direktori yang SAMA dengan file HTML
+    // Menggunakan teknik autoplay yang kompatibel dengan kebijakan browser modern:
+    // 1. Coba autoplay langsung (didukung jika user sudah berinteraksi sebelumnya atau policy diizinkan)
+    // 2. Jika gagal, pasang event listener untuk interaksi pertama user (sentuh/klik) agar musik mulai
+    // 3. Untuk iOS, perlu memastikan audio context dimulai dari user gesture, kita handle dengan baik
+    // 4. Tidak ada tombol kontrol yang ditampilkan, pengguna hanya perlu menyentuh layar jika autoplay diblokir
     
-    // Fungsi untuk mencoba memutar musik secara otomatis
-    function autoPlayMusic() {
-        audio.play().then(() => {
-            // berhasil autoplay
-            console.log("Musik nostalgia menyala (music.mp3)");
-        }).catch((err) => {
-            // Gagal karena kebijakan browser (misalnya user belum berinteraksi)
-            // Kita pasang listener satu kali agar musik mulai saat sentuhan/klik pertama kali di halaman
-            // Tapi tetap TIDAK menampilkan tombol apapun, hanya interaksi halus.
-            const startMusicOnInteraction = () => {
-                audio.play().then(() => {
-                    // musik berhasil diputar setelah interaksi
-                }).catch(e => console.warn("masih gagal:", e));
-                document.removeEventListener('click', startMusicOnInteraction);
-                document.removeEventListener('touchstart', startMusicOnInteraction);
-                document.removeEventListener('keydown', startMusicOnInteraction);
-            };
-            document.addEventListener('click', startMusicOnInteraction);
-            document.addEventListener('touchstart', startMusicOnInteraction);
-            document.addEventListener('keydown', startMusicOnInteraction);
-        });
+    const audio = new Audio('music.mp3');
+    audio.loop = true;          // mengulang untuk nuansa nostalgia
+    audio.volume = 0.5;         // volume seimbang untuk semua perangkat
+    audio.preload = 'auto';     // preload file agar siap diputar
+    
+    let musicStarted = false;
+    let autoplayAttempted = false;
+    const statusIndicator = document.getElementById('musicStatusIndicator');
+    
+    // Fungsi update status indicator (opsional, tidak mengganggu)
+    function updateMusicStatus(text, isPlaying = false) {
+        if (statusIndicator) {
+            if (isPlaying) {
+                statusIndicator.innerHTML = '♪ melodi nostalgia mengalun lembut ♪';
+                statusIndicator.style.opacity = '0.8';
+            } else {
+                statusIndicator.innerHTML = text || '🎵 sentuh layar untuk memulai musik 🎵';
+                statusIndicator.style.opacity = '0.7';
+            }
+        }
     }
     
-    // Jalankan autoplay ketika halaman siap
+    // Fungsi untuk memulai musik (dipanggil dari berbagai trigger)
+    function startMusic() {
+        if (musicStarted) return Promise.resolve(true);
+        
+        return audio.play()
+            .then(() => {
+                musicStarted = true;
+                updateMusicStatus('', true);
+                console.log('✅ Musik nostalgia berjalan (kompatibel Android/iOS)');
+                return true;
+            })
+            .catch((err) => {
+                console.log('Autoplay ditolak, menunggu interaksi user:', err);
+                updateMusicStatus('🎵 sentuh layar untuk memulai musik 🎵', false);
+                return false;
+            });
+    }
+    
+    // Mencoba autoplay saat halaman dimuat (didukung di beberapa browser, terutama setelah interaksi sebelumnya)
+    function attemptAutoPlay() {
+        if (autoplayAttempted) return;
+        autoplayAttempted = true;
+        
+        // Gunakan delay kecil agar DOM siap
+        setTimeout(() => {
+            startMusic().then(success => {
+                if (!success) {
+                    // Autoplay gagal, pasang listener global untuk interaksi pertama user
+                    const startOnInteraction = () => {
+                        startMusic().then(() => {
+                            // Setelah berhasil, hapus semua listener
+                            document.removeEventListener('click', startOnInteraction);
+                            document.removeEventListener('touchstart', startOnInteraction);
+                            document.removeEventListener('keydown', startOnInteraction);
+                        });
+                    };
+                    document.addEventListener('click', startOnInteraction);
+                    document.addEventListener('touchstart', startOnInteraction);
+                    document.addEventListener('keydown', startOnInteraction);
+                    
+                    // Indikator tetap menunjukkan bahwa perlu sentuhan
+                    updateMusicStatus('🎵 sentuh layar untuk memulai musik 🎵', false);
+                }
+            });
+        }, 100);
+    }
+    
+    // Inisialisasi autoplay setelah DOM siap
     document.addEventListener('DOMContentLoaded', () => {
-        autoPlayMusic();
+        attemptAutoPlay();
     });
     
-    // Opsional: jika ada error load file musik (miss), tidak mengganggu antarmuka.
-    audio.addEventListener('error', () => {
-        // Tidak menampilkan pesan error yang mengganggu, hanya diam-diam di console
-        console.log("File music.mp3 tidak ditemukan di direktori yang sama dengan file HTML.");
+    // Untuk iOS: AudioContext kadang perlu di-resume via interaksi, namun kita sudah handle via startOnInteraction
+    // Pastikan juga file music.mp3 tersedia. Jika error (file tidak ditemukan), tampilkan indikator lembut
+    audio.addEventListener('error', (e) => {
+        console.warn('File music.mp3 tidak ditemukan, pastikan file ada di folder yang sama dengan HTML');
+        if (statusIndicator) {
+            statusIndicator.innerHTML = '🎵 (melodi akan hadir saat file tersedia) 🎵';
+            statusIndicator.style.opacity = '0.5';
+        }
+    });
+    
+    // Event tambahan: jika musik berhasil diputar via interaksi, update status
+    audio.addEventListener('play', () => {
+        musicStarted = true;
+        updateMusicStatus('', true);
+    });
+    
+    audio.addEventListener('pause', () => {
+        if (musicStarted) {
+            // Jeda bisa terjadi karena sesuatu, tapi kita tetap bisa restart secara otomatis? Tidak perlu mengganggu
+            // Karena tidak ada tombol, jika berhenti karena error tidak perlu handling khusus
+        }
     });
     
     // ======================= GALERI FOTO (HEIC) ========================
@@ -451,7 +526,7 @@
         }
     });
 
-    // Tombol nostalgia efek lembut (tidak mempengaruhi musik, hanya animasi foto)
+    // Tombol nostalgia efek lembut (tidak mempengaruhi musik)
     const nostalgicBtn = document.getElementById('refreshMoodBtn');
     nostalgicBtn.addEventListener('click', () => {
         const allCards = document.querySelectorAll('.polaroid');
@@ -481,41 +556,83 @@
             toastMsg.style.opacity = '0';
             setTimeout(() => toastMsg.remove(), 500);
         }, 1400);
+        
+        // Juga coba pastikan musik berjalan jika user sudah interaksi namun sebelumnya gagal
+        if (!musicStarted) {
+            startMusic();
+        }
     });
 
-    // Inisialisasi galeri saat halaman siap
+    // Inisialisasi galeri
     document.addEventListener('DOMContentLoaded', () => {
         renderNostalgiaGallery();
     });
+    
+    // Tambahan untuk iOS: beberapa versi memerlukan sentuhan ke elemen body untuk mengaktifkan audio
+    // Karena kita sudah pasang event listener global, itu sudah cukup.
+    // Minor: pastikan audio tidak berhenti saat layar terkunci (tidak bisa dihindari, tapi loop tetap)
 </script>
 
 <!-- 
-    ✨ PETUNJUK UNTUK PEMILIK WEBSITE (tidak terlihat oleh pengguna):
+    ✨ PETUNJUK LENGKAP UNTUK PEMILIK WEBSITE ✨
     
-    1. FOTO (format HEIC):
-       - Buat folder dengan nama "img" (sejajar dengan file HTML)
-       - Letakkan 4 file HEIC di dalam folder "img" dengan nama persis:
-         ▪ lanurpratamaa-20260501-0002.heic
-         ▪ lanurpratamaa-20260501-0003.heic
-         ▪ lanurpratamaa-20260501-0004.heic
-         ▪ lanurpratamaa-20260501-0005.heic
-       
-    2. MUSIK (format MP3):
-       - Letakkan file "music.mp3" di DIREKTORI YANG SAMA (SEJAJAR) dengan file HTML ini.
-       - TIDAK perlu folder "mp3" lagi.
-       - Musik akan otomatis diputar saat halaman dimuat.
-       - Jika browser memblokir autoplay (kebijakan modern), musik akan mulai saat pengguna pertama kali 
-         berinteraksi dengan halaman (klik, sentuh, atau tekan tombol keyboard) — tanpa tombol kontrol apapun.
-       
-    3. DESAIN:
-       - Tidak ada tombol kontrol musik (play, stop, volume) yang terlihat.
-       - Tidak ada teks yang memperlihatkan struktur folder "img" atau lokasi file.
-       - Nuansa vintage dan nostalgia tetap menjadi fokus utama.
-       
-    4. KOMPATIBILITAS HEIC:
-       - Browser Safari (Apple) mendukung HEIC secara native.
-       - Chrome / Edge di Windows mungkin perlu ekstensi tambahan.
-       - Jika gambar gagal dimuat, akan muncul placeholder halus tanpa menyebut path teknis.
+    📁 STRUKTUR FOLDER YANG BENAR (agar semua perangkat kompatibel):
+    
+        root folder (tempat file HTML ini disimpan)
+        │
+        ├── index.html          (file halaman ini)
+        ├── music.mp3           (file musik, SEJAJAR dengan HTML, TIDAK dalam folder)
+        │
+        └── img/                (folder untuk foto HEIC)
+            ├── lanurpratamaa-20260501-0002.heic
+            ├── lanurpratamaa-20260501-0003.heic
+            ├── lanurpratamaa-20260501-0004.heic
+            └── lanurpratamaa-20260501-0005.heic
+    
+    
+    🎵 MUSIK (KOMPATIBEL Android & iOS):
+        - Format file: MP3 (pastikan bitrate standar, 128-192kbps direkomendasikan)
+        - Nama file: music.mp3 (huruf kecil semua)
+        - Lokasi: SAMA dengan file HTML (tidak di dalam folder manapun)
+        - Perilaku:
+          * Android: autoplay akan berjalan setelah user menyentuh layar (kebijakan browser)
+          * iOS: membutuhkan sentuhan/gesture pertama, setelah itu musik berjalan mulus
+          * Desktop: sebagian besar autoplay langsung berjalan karena interaksi awal sudah ada
+        - Indikator akan berubah dari "bersiap" menjadi "mengalun lembut" saat musik mulai
+    
+    
+    📸 FOTO (HEIC):
+        - Pastikan 4 file HEIC dengan nama persis seperti di atas tersimpan di folder "img"
+        - HEIC didukung natively di Safari (iPhone/iPad/Mac)
+        - Untuk Android/Windows, jika tidak terbaca akan muncul placeholder lembut
+        - Rekomendasi: jika ingin kompatibilitas lebih luas, sediakan juga versi JPG/PNG
+    
+    
+    ⚙️ FITUR:
+        - Musik looping otomatis, volume 50% (pas untuk latar nostalgia)
+        - Galeri polaroid dengan efek vintage
+        - Lightbox saat foto diklik
+        - Tombol "putar kembali kenangan" hanya efek animasi (tidak mengganggu musik)
+        - TIDAK ADA tombol kontrol musik yang terlihat (minimalis sesuai permintaan)
+        - Indikator status musik halus sebagai panduan pengguna
+    
+    
+    🚀 TIPS UNTUK iOS / SAFARI:
+        - Pastikan file music.mp3 benar-benar ada dan tidak corrupt
+        - Pengguna harus menyentuh layar untuk pertama kali agar musik bisa berjalan (kebijakan Apple)
+        - Setelah disentuh, musik akan berjalan otomatis dan looping tanpa henti
+    
+    
+    🧪 TESTING:
+        - Buka file HTML di perangkat Android (Chrome) -> sentuh layar, musik berjalan
+        - Buka di iPhone (Safari) -> sentuh layar, musik berjalan
+        - Buka di laptop/desktop -> jika autoplay diblokir, klik di mana saja untuk memulai
+    
+    
+    💡 CATATAN PENTING:
+        - Tidak ada teks yang memperlihatkan struktur folder "img" atau lokasi file musik di UI
+        - Semua path teknis disembunyikan dari pengguna akhir
+        - Desain responsif dan nyaman di semua ukuran layar
 -->
 </body>
 </html>
