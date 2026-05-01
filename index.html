@@ -29,9 +29,135 @@
             border: 1px solid #f7e5d0;
         }
 
-        .hero {
+        /* ========== PROFIL SISWA (bagian atas) ========== */
+        .profile-section {
             text-align: center;
             margin-bottom: 2rem;
+            padding: 0.5rem 0;
+        }
+
+        .profile-tap-btn {
+            background: #ab8c64;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            color: #fff7e8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-tap-btn:hover {
+            background: #7e5d3c;
+            transform: scale(1.02);
+        }
+
+        .profile-tap-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Profil card yang bisa dibuka/tutup - dengan scroll area terbatas */
+        .profile-card {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 248, 235, 0.95);
+            border-radius: 2rem;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            border: 1px solid #e2caa8;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            scroll-margin-top: 80px;
+            display: none;
+            max-height: 380px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        
+        /* Custom scroll cantik */
+        .profile-card::-webkit-scrollbar {
+            width: 5px;
+        }
+        .profile-card::-webkit-scrollbar-track {
+            background: #eedfcb;
+            border-radius: 10px;
+        }
+        .profile-card::-webkit-scrollbar-thumb {
+            background: #b98f62;
+            border-radius: 10px;
+        }
+
+        .profile-card.show {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .instagram-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #fdf4e3, #f7e5d2);
+            padding: 10px 18px;
+            border-radius: 60px;
+            text-decoration: none;
+            color: #3b2a1f;
+            font-weight: 600;
+            transition: 0.2s;
+            border: 1px solid #dbbf94;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        
+        .instagram-link:last-child {
+            margin-bottom: 6px;
+        }
+
+        .instagram-link:hover {
+            background: #e9d9c2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+        }
+
+        .instagram-icon {
+            font-size: 1.4rem;
+        }
+        
+        /* hint kecil banyak akun */
+        .profile-hint {
+            font-size: 0.7rem;
+            color: #a07b53;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            background: #f0e2d1;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 1rem;
             position: relative;
         }
 
@@ -286,6 +412,13 @@
             .polaroid {
                 width: 260px;
             }
+            .instagram-link {
+                font-size: 0.8rem;
+                padding: 9px 12px;
+            }
+            .profile-card {
+                max-height: 340px;
+            }
         }
 
         @media (max-width: 580px) {
@@ -305,9 +438,114 @@
 <body>
 
 <div class="container">
+    <!-- ========== BAGIAN PROFIL SISWA (ATAS) - BISA TUTUP/BUKA dengan SCROLL AREA ========== -->
+    <div class="profile-section">
+        <button class="profile-tap-btn" id="tapProfileBtn">
+            👥 Tap Profil Keluarga TJKT III
+            <span id="arrowIcon">▼</span>
+        </button>
+        
+        <!-- Profil card dengan scroll terbatas, hanya menampilkan semua akun tapi sudah terkompresi rapi -->
+        <div id="studentProfile" class="profile-card">
+            <div class="profile-hint">✨ 22 anggota kelas — yang terverifikasi ig ✨</div>
+            <!-- Daftar semua akun instagram dalam list scroll yang ringkas -->
+            <a href="https://www.instagram.com/rizkyfirdaus177/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @rizkyfirdaus177
+            </a>
+            <a href="https://www.instagram.com/dffialfarizi_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @dffialfarizi_
+            </a>
+            <a href="https://www.instagram.com/_vinarss/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @_vinarss
+            </a>
+            <a href="https://www.instagram.com/rpliprdaus_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @rpliprdaus_
+            </a>
+            <a href="https://www.instagram.com/ggngmlrr/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @ggngmlrr
+            </a>
+            <a href="https://www.instagram.com/rey_zzkaaa/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @rey_zzkaaa
+            </a>
+            <a href="https://www.instagram.com/sesh_llya/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @sesh_llya
+            </a>
+            <a href="https://www.instagram.com/bayysl_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @bayysl_
+            </a>
+            <a href="https://www.instagram.com/mykelll15/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @mykelll15
+            </a>
+            <a href="https://www.instagram.com/d_77aaa/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @d_77aaa
+            </a>
+            <a href="https://www.instagram.com/biikaaaaaa" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @biikaaaaaa
+            </a>
+            <a href="https://www.instagram.com/meimei_me1/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @meimei_me1
+            </a>
+            <a href="https://www.instagram.com/zchmrxs_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @zchmrxs_
+            </a>
+            <a href="https://www.instagram.com/all_fidz08/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @all_fidz08
+            </a>
+            <a href="https://www.instagram.com/rz1028_" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @rz1028_
+            </a>
+            <a href="https://www.instagram.com/n_sifah429/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @n_sifah429
+            </a>
+            <a href="https://www.instagram.com/irfnntrii__/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @irfnntrii__
+            </a>
+            <a href="https://www.instagram.com/lanurpratamaa/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @lanurpratamaa
+            </a>
+            <a href="https://www.instagram.com/rellia_yenn/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @rellia_yenn
+            </a>
+            <a href="https://www.instagram.com/tonialpariji/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @tonialpariji
+            </a>
+            <a href="https://www.instagram.com/dezanarifin_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @dezanarifin_
+            </a>
+            <a href="https://www.instagram.com/raihanadtyas_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @raihanadtyas_
+            </a>
+            <a href="https://www.instagram.com/ghvynx_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @ghvynx_
+            </a>
+            <a href="https://www.instagram.com/daanss_al/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @daanss_al
+            </a>
+            <a href="https://www.instagram.com/dedenn.07/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @dedenn.07
+            </a>
+            <a href="https://www.instagram.com/stnaryaaaa_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @stnaryaaaa_
+            </a>
+            <a href="https://www.instagram.com/aligilangpurnama_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @aligilangpurnama_
+            </a>
+            <a href="https://www.instagram.com/angga7188_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @angga7188_
+            </a>
+            <a href="https://www.instagram.com/adith1aa_0/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @adith1aa_0
+            </a>
+            <a href="https://www.instagram.com/romi_mahes4/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                <span class="instagram-icon">📷</span> @romi_mahes4
+            </a>
+            <div class="profile-hint" style="margin-top: 8px;">⬇️ gulir terus ke bawah untuk melihat semua teman</div>
+        </div>
+    </div>
+
     <div class="hero">
-        <h1>kenangan TJKT III</h1>
-        <p>foto, dan cerita dalam bingkai</p>
+        <h1>TJKT III</h1>
+        <p>foto, suara dan cerita dalam bingkai</p>
         <div class="film-strip">
             <span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
@@ -318,7 +556,7 @@
         <div class="music-indicator" id="musicTapButton">
             <span class="music-icon">🎵</span>
             <span class="music-text" id="musicStatusText">tap untuk memutar musik</span>
-            <span class="music-icon">♪</span>
+            <span class="music-icon">🎶</span>
         </div>
     </div>
 
@@ -356,13 +594,13 @@
     function updateMusicUI() {
         if (!statusTextSpan) return;
         if (isPlaying) {
-            statusTextSpan.innerHTML = '♪ musik sedang mengalun';
+            statusTextSpan.innerHTML = '♪ suara sedang mengalun ♪';
             musicTapBtn.classList.add('music-active');
         } else if (hasEnded) {
-            statusTextSpan.innerHTML = '🎵 lagu selesai • tap untuk putar ulang 🎵';
+            statusTextSpan.innerHTML = '🎵 suara selesai • tap untuk putar ulang 🎵';
             musicTapBtn.classList.remove('music-active');
         } else {
-            statusTextSpan.innerHTML = 'tap untuk memutar suara! 🎵';
+            statusTextSpan.innerHTML = '🎵 tap untuk memutar suara 🎵';
             musicTapBtn.classList.remove('music-active');
         }
     }
@@ -407,23 +645,55 @@
     
     updateMusicUI();
     
+    // ======================= PROFIL SISWA (Tap Buka/Tutup + Gulir & Scroll Area) ========================
+    const tapBtn = document.getElementById('tapProfileBtn');
+    const profileCard = document.getElementById('studentProfile');
+    const arrowIcon = document.getElementById('arrowIcon');
+    let isProfileOpen = false;
+    
+    // Awalnya profil tertutup
+    profileCard.classList.remove('show');
+    
+    tapBtn.addEventListener('click', () => {
+        if (!isProfileOpen) {
+            // BUKA PROFIL
+            profileCard.classList.add('show');
+            isProfileOpen = true;
+            arrowIcon.innerHTML = '▲';
+            // Gulir ke profil dengan smooth scroll agar pengguna bisa melihat panel terbuka
+            setTimeout(() => {
+                profileCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+            // Efek highlight sementara
+            profileCard.style.transition = 'all 0.3s';
+            profileCard.style.boxShadow = '0 0 0 3px #dbb87a, 0 12px 28px rgba(0,0,0,0.2)';
+            setTimeout(() => {
+                profileCard.style.boxShadow = '';
+            }, 1000);
+        } else {
+            // TUTUP PROFIL
+            profileCard.classList.remove('show');
+            isProfileOpen = false;
+            arrowIcon.innerHTML = '▼';
+        }
+    });
+    
     // ======================= GALERI FOTO (14 FOTO, TANPA TEKS HEIC/JPG) ========================
-    // Daftar semua foto: caption hanya kata-kata nostalgia, tanpa embel-embel format file
     const daftarFoto = [
         // 4 HEIC
         { namaFile: "lanurpratamaa-20260501-0002.heic", caption: "🌤️ senja yang tak pernah usai", alt: "kenangan 0002" },
         { namaFile: "lanurpratamaa-20260501-0003.heic", caption: "🎞️ tawa & rintik hujan", alt: "kenangan 0003" },
-        { namaFile: "lanurpratamaa-20260501-0004.heic", caption: "⭐ bintang yang tersenyum", alt: "kenangan 0004" },
+        { namaFile: "lanurpratamaa-20260501-0004.heic", caption: "📼 memori di balik kabut", alt: "kenangan 0004" },
         { namaFile: "lanurpratamaa-20260501-0005.heic", caption: "✨ cahaya dari masa lalu", alt: "kenangan 0005" },
         // 3 JPG sebelumnya
         { namaFile: "arfaprmd-20260501-0001.jpg", caption: "🌅 pelangi kenangan", alt: "foto jpg pertama" },
         { namaFile: "arfaprmd-20260501-0002.jpg", caption: "🏞️ senja kedua yang abadi", alt: "foto jpg kedua" },
-        { namaFile: "meimei_me1-20260501-0001.jpg", caption: "🌸 senyum yang tersimpan", alt: "foto meimei" },
+        { namaFile: "meimei_me1-20260501-0001.jpg", caption: "🌸 meimei • senyum yang tersimpan", alt: "foto meimei" },
         // 7 foto baru (foto1.jpg s/d foto7.jpg)
         { namaFile: "foto1.jpg", caption: "📸 lembar kenangan pertama", alt: "foto 1" },
         { namaFile: "foto2.jpg", caption: "🍂 cerita di balik senyum", alt: "foto 2" },
         { namaFile: "foto3.jpg", caption: "🌻 hangatnya waktu", alt: "foto 3" },
-        { namaFile: "foto4.jpg", caption: "⭐ senyuman didalam ruang", alt: "foto 4" },
+        { namaFile: "foto4.jpg", caption: "⭐ bintang yang tersenyum", alt: "foto 4" },
         { namaFile: "foto5.jpg", caption: "🍃 desir kenangan", alt: "foto 5" },
         { namaFile: "foto6.jpg", caption: "🎈 tawa yang abadi", alt: "foto 6" },
         { namaFile: "foto7.jpg", caption: "💫 kita dan ruang waktu", alt: "foto 7" }
@@ -434,7 +704,6 @@
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCaption = document.getElementById('lightboxCaption');
 
-    // Fungsi untuk menghasilkan rotasi random yang konsisten per indeks
     function getRandomRotation(idx) {
         const rotations = [-1.8, -1.2, -0.7, 0.5, 1.0, 1.6, 2.0, -1.5, -0.3, 0.8, 1.3, 1.9, -0.9, 0.3];
         return rotations[idx % rotations.length];
@@ -448,7 +717,6 @@
             const polaroidCard = document.createElement('div');
             polaroidCard.className = 'polaroid';
             polaroidCard.setAttribute('data-idx', idx);
-            // berikan rotasi individual
             const rotateVal = getRandomRotation(idx);
             polaroidCard.style.transform = `rotate(${rotateVal}deg)`;
             
@@ -483,7 +751,6 @@
         });
     }
 
-    // Tutup lightbox
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox || e.target === lightboxModal) {
             lightbox.classList.remove('active');
@@ -496,7 +763,6 @@
         }
     });
 
-    // Tombol nostalgia efek lembut
     const nostalgicBtn = document.getElementById('refreshMoodBtn');
     nostalgicBtn.addEventListener('click', () => {
         const allCards = document.querySelectorAll('.polaroid');
@@ -529,52 +795,10 @@
         }, 1400);
     });
 
-    // Inisialisasi galeri
     document.addEventListener('DOMContentLoaded', () => {
         renderGallery();
-        console.log('✅ Galeri siap: 14 foto kenangan di folder img');
+        console.log('✅ Galeri siap: 14 foto kenangan + profil scrollable');
     });
 </script>
-
-<!-- 
-    ✨ PETUNJUK LENGKAP UNTUK PEMILIK WEBSITE ✨
-    
-    📁 STRUKTUR FOLDER YANG BENAR:
-    
-        root folder (tempat file HTML)
-        │
-        ├── index.html
-        ├── music.mp3                (file musik, SEJAJAR dengan HTML)
-        │
-        └── img/                     (folder untuk semua gambar)
-            ├── lanurpratamaa-20260501-0002.heic
-            ├── lanurpratamaa-20260501-0003.heic
-            ├── lanurpratamaa-20260501-0004.heic
-            ├── lanurpratamaa-20260501-0005.heic
-            ├── arfaprmd-20260501-0001.jpg
-            ├── arfaprmd-20260501-0002.jpg
-            ├── meimei_me1-20260501-0001.jpg
-            ├── foto1.jpg
-            ├── foto2.jpg
-            ├── foto3.jpg
-            ├── foto4.jpg
-            ├── foto5.jpg
-            ├── foto6.jpg
-            └── foto7.jpg
-    
-    🎵 MUSIK:
-        - Hanya diputar 1 KALI (tidak looping)
-        - Untuk memutar ulang, TAP indikator musik (badge)
-    
-    📸 FOTO (total 14 foto):
-        - Semua disimpan di folder "img"
-        - Caption pada setiap foto hanya berisi kata-kata nostalgia (tanpa embel-embel HEIC/JPG)
-        - Klik pada foto akan membuka lightbox untuk melihat lebih besar
-    
-    💡 SEMUA PATH TEKNIS TERSEMBUNYI dari tampilan pengguna.
-    - Tidak ada teks yang memperlihatkan folder "img" atau ekstensi file
-    - Tampilan hanya menampilkan kenangan dan nostalgia yang indah
-    - Setiap kartu foto memiliki efek polaroid vintage dengan rotasi unik
--->
 </body>
 </html>
