@@ -280,27 +280,55 @@
             margin-top: 4px;
         }
         
-        /* indikator musik nostalgia (dekorasi) */
-        .music-note {
+        /* indikator musik yang bisa diklik (tap untuk memutar ulang) */
+        .music-player-tap {
             text-align: center;
-            font-size: 0.75rem;
-            opacity: 0.65;
-            margin: 12px auto 0;
-            letter-spacing: 2px;
-            font-family: monospace;
-            color: #7c623f;
-            background: rgba(252, 240, 220, 0.6);
-            display: inline-block;
-            width: auto;
-            padding: 4px 18px;
-            border-radius: 50px;
-            backdrop-filter: blur(2px);
+            margin: 8px auto 10px;
         }
         
-        .music-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 0.5rem;
+        .music-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(252, 240, 220, 0.85);
+            backdrop-filter: blur(4px);
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-family: 'Caveat', monospace;
+            color: #5a3a20;
+            border: 1px solid #e2caa8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .music-indicator:hover {
+            background: #f7e8d4;
+            transform: scale(1.02);
+        }
+        
+        .music-indicator:active {
+            transform: scale(0.98);
+        }
+        
+        .music-icon {
+            font-size: 1.2rem;
+        }
+        
+        .music-text {
+            letter-spacing: 0.5px;
+        }
+        
+        /* efek detak kecil saat musik dimainkan */
+        @keyframes gentlePulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .music-active {
+            background: #e6d5bd;
+            box-shadow: 0 0 8px rgba(150, 100, 50, 0.3);
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
@@ -309,10 +337,19 @@
 
 <div class="container">
     <div class="hero">
-        <h1>kenangan & irama</h1>
-        <p>musik mengalun lembut, membawa waktu pulang</p>
+        <h1>📼 kenangan & irama</h1>
+        <p>musik mengalun sebentar, sentuh lagi untuk ulang</p>
         <div class="film-strip">
             <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- Musik: diputar 1x saja, harus tap indikator untuk memutar ulang -->
+    <div class="music-player-tap">
+        <div class="music-indicator" id="musicTapButton">
+            <span class="music-icon">🎵</span>
+            <span class="music-text" id="musicStatusText">tap untuk memutar musik</span>
+            <span class="music-icon">♪</span>
         </div>
     </div>
 
@@ -334,110 +371,111 @@
 </div>
 
 <script>
-    // ======================= MUSIK UNIVERSAL (Android/iOS + Desktop) ======================
+    // ======================= MUSIK (1x putar, tap untuk ulang) ======================
     // File musik "music.mp3" berada di direktori yang SAMA dengan file HTML
-    // Menggunakan teknik autoplay yang kompatibel dengan kebijakan browser modern:
-    // 1. Coba autoplay langsung (didukung jika user sudah berinteraksi sebelumnya atau policy diizinkan)
-    // 2. Jika gagal, pasang event listener untuk interaksi pertama user (sentuh/klik) agar musik mulai
-    // 3. Untuk iOS, perlu memastikan audio context dimulai dari user gesture, kita handle dengan baik
-    // 4. Tidak ada tombol kontrol yang ditampilkan, pengguna hanya perlu menyentuh layar jika autoplay diblokir
+    // Musik diputar hanya 1 kali (tidak looping)
+    // User harus mengetuk indikator untuk memutar ulang setelah musik selesai atau sebelum dimulai
     
     const audio = new Audio('music.mp3');
-    audio.loop = true;          // mengulang untuk nuansa nostalgia
-    audio.volume = 0.5;         // volume seimbang untuk semua perangkat
-    audio.preload = 'auto';     // preload file agar siap diputar
+    audio.loop = false;          // HANYA 1 KALI PUTAR, tidak looping
+    audio.volume = 0.55;         // volume nyaman untuk semua perangkat
+    audio.preload = 'auto';
     
-    let musicStarted = false;
-    let autoplayAttempted = false;
-    const statusIndicator = document.getElementById('musicStatusIndicator');
+    let isPlaying = false;
+    let hasEnded = false;         // apakah lagu sudah selesai diputar
     
-    // Fungsi update status indicator (opsional, tidak mengganggu)
-    function updateMusicStatus(text, isPlaying = false) {
-        if (statusIndicator) {
-            if (isPlaying) {
-                statusIndicator.innerHTML = '♪ melodi nostalgia mengalun lembut ♪';
-                statusIndicator.style.opacity = '0.8';
-            } else {
-                statusIndicator.innerHTML = text || '🎵 sentuh layar untuk memulai musik 🎵';
-                statusIndicator.style.opacity = '0.7';
-            }
+    const musicTapBtn = document.getElementById('musicTapButton');
+    const statusTextSpan = document.getElementById('musicStatusText');
+    
+    // Fungsi update tampilan teks dan gaya
+    function updateMusicUI() {
+        if (!statusTextSpan) return;
+        
+        if (isPlaying) {
+            statusTextSpan.innerHTML = '♪ musik sedang mengalun ♪';
+            musicTapBtn.classList.add('music-active');
+        } else if (hasEnded) {
+            statusTextSpan.innerHTML = '🎵 lagu selesai • tap untuk putar ulang 🎵';
+            musicTapBtn.classList.remove('music-active');
+        } else {
+            statusTextSpan.innerHTML = '🎵 tap untuk memutar musik 🎵';
+            musicTapBtn.classList.remove('music-active');
         }
     }
     
-    // Fungsi untuk memulai musik (dipanggil dari berbagai trigger)
-    function startMusic() {
-        if (musicStarted) return Promise.resolve(true);
+    // Fungsi untuk memutar musik (reset posisi ke awal)
+    function playMusic() {
+        // Jika musik sedang diputar, kita tetap ulang dari awal (perilaku tap: putar ulang / restart)
+        // Tapi sesuai keinginan: "kalo mau muter lagi harus tap" -> jadi tap akan memutar ulang dari awal.
+        // Jika musik sedang berjalan, tap akan menghentikan lalu memutar ulang? lebih intuitif: restart lagu.
+        // Namun agar tidak membingungkan, tap akan selalu memulai dari awal (reset).
         
-        return audio.play()
+        // Matikan dulu jika sedang berjalan
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+        }
+        
+        // Reset posisi ke awal
+        audio.currentTime = 0;
+        
+        // Mulai putar
+        audio.play()
             .then(() => {
-                musicStarted = true;
-                updateMusicStatus('', true);
-                console.log('✅ Musik nostalgia berjalan (kompatibel Android/iOS)');
-                return true;
+                isPlaying = true;
+                hasEnded = false;
+                updateMusicUI();
+                console.log("Musik diputar (1x, tidak looping)");
             })
             .catch((err) => {
-                console.log('Autoplay ditolak, menunggu interaksi user:', err);
-                updateMusicStatus('🎵 sentuh layar untuk memulai musik 🎵', false);
-                return false;
+                console.warn("Gagal memutar musik:", err);
+                // Jika gagal karena interaksi belum terjadi (misal di iOS), indikator akan tetap bisa dicoba lagi
+                isPlaying = false;
+                updateMusicUI();
+                // Tampilkan pesan halus
+                statusTextSpan.innerHTML = '🎵 sentuh lagi untuk mulai 🎵';
+                setTimeout(() => {
+                    if (!isPlaying && !hasEnded) updateMusicUI();
+                }, 1200);
             });
     }
     
-    // Mencoba autoplay saat halaman dimuat (didukung di beberapa browser, terutama setelah interaksi sebelumnya)
-    function attemptAutoPlay() {
-        if (autoplayAttempted) return;
-        autoplayAttempted = true;
-        
-        // Gunakan delay kecil agar DOM siap
-        setTimeout(() => {
-            startMusic().then(success => {
-                if (!success) {
-                    // Autoplay gagal, pasang listener global untuk interaksi pertama user
-                    const startOnInteraction = () => {
-                        startMusic().then(() => {
-                            // Setelah berhasil, hapus semua listener
-                            document.removeEventListener('click', startOnInteraction);
-                            document.removeEventListener('touchstart', startOnInteraction);
-                            document.removeEventListener('keydown', startOnInteraction);
-                        });
-                    };
-                    document.addEventListener('click', startOnInteraction);
-                    document.addEventListener('touchstart', startOnInteraction);
-                    document.addEventListener('keydown', startOnInteraction);
-                    
-                    // Indikator tetap menunjukkan bahwa perlu sentuhan
-                    updateMusicStatus('🎵 sentuh layar untuk memulai musik 🎵', false);
-                }
-            });
-        }, 100);
-    }
-    
-    // Inisialisasi autoplay setelah DOM siap
-    document.addEventListener('DOMContentLoaded', () => {
-        attemptAutoPlay();
+    // Event ketika lagu selesai (ended)
+    audio.addEventListener('ended', () => {
+        isPlaying = false;
+        hasEnded = true;
+        updateMusicUI();
+        console.log("Musik selesai (1x putar). Tap indikator untuk putar ulang.");
     });
     
-    // Untuk iOS: AudioContext kadang perlu di-resume via interaksi, namun kita sudah handle via startOnInteraction
-    // Pastikan juga file music.mp3 tersedia. Jika error (file tidak ditemukan), tampilkan indikator lembut
+    // Event error handling jika file tidak ada
     audio.addEventListener('error', (e) => {
-        console.warn('File music.mp3 tidak ditemukan, pastikan file ada di folder yang sama dengan HTML');
-        if (statusIndicator) {
-            statusIndicator.innerHTML = '🎵 (melodi akan hadir saat file tersedia) 🎵';
-            statusIndicator.style.opacity = '0.5';
+        console.warn("File music.mp3 tidak ditemukan, pastikan file ada di folder yang sama dengan HTML");
+        if (statusTextSpan) {
+            statusTextSpan.innerHTML = '⚠️ file musik tidak tersedia ⚠️';
         }
+        isPlaying = false;
+        hasEnded = false;
     });
     
-    // Event tambahan: jika musik berhasil diputar via interaksi, update status
-    audio.addEventListener('play', () => {
-        musicStarted = true;
-        updateMusicStatus('', true);
+    // Tombol indikator musik: fungsi tap / klik untuk memutar ulang atau memulai
+    musicTapBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Jika musik sedang diputar, tap akan mengulang dari awal (play from start)
+        // Sesuai konsep "lagu diputar cuma 1x, kalo mau muter lagi harus tap"
+        playMusic();
     });
     
-    audio.addEventListener('pause', () => {
-        if (musicStarted) {
-            // Jeda bisa terjadi karena sesuatu, tapi kita tetap bisa restart secara otomatis? Tidak perlu mengganggu
-            // Karena tidak ada tombol, jika berhenti karena error tidak perlu handling khusus
-        }
-    });
+    // Inisialisasi UI pertama kali
+    updateMusicUI();
+    
+    // Opsional: mencoba autoplay ringan? Tidak, biar murni tap dulu agar sesuai keinginan.
+    // Tapi beberapa pengguna mungkin berharap bisa langsung, namun spesifikasi "lagu diputar cuma 1x, kalo mau muter lagi harus tap"
+    // Artinya tidak otomatis, harus tap. Jadi kita tidak melakukan autoplay sama sekali.
+    // Supaya lebih ramah, kita hanya tampilkan indikator tap untuk memulai.
+    
+    // Tambahan: ketika halaman dimuat, tidak ada suara apapun sampai user tap indikator.
+    console.log("Mode musik: 1x putar, tap indikator untuk memutar ulang / mulai");
     
     // ======================= GALERI FOTO (HEIC) ========================
     // DATA FOTO: 4 gambar dengan format .heic. Tersimpan di folder "img" 
@@ -526,7 +564,7 @@
         }
     });
 
-    // Tombol nostalgia efek lembut (tidak mempengaruhi musik)
+    // Tombol nostalgia efek lembut (tidak mempengaruhi musik, hanya animasi foto)
     const nostalgicBtn = document.getElementById('refreshMoodBtn');
     nostalgicBtn.addEventListener('click', () => {
         const allCards = document.querySelectorAll('.polaroid');
@@ -538,7 +576,7 @@
             }, 180);
         });
         const toastMsg = document.createElement('div');
-        toastMsg.innerText = '🎞️ bernostalgia dengan irama...';
+        toastMsg.innerText = '🎞️ bernostalgia...';
         toastMsg.style.position = 'fixed';
         toastMsg.style.bottom = '22px';
         toastMsg.style.left = '50%';
@@ -556,32 +594,32 @@
             toastMsg.style.opacity = '0';
             setTimeout(() => toastMsg.remove(), 500);
         }, 1400);
-        
-        // Juga coba pastikan musik berjalan jika user sudah interaksi namun sebelumnya gagal
-        if (!musicStarted) {
-            startMusic();
-        }
     });
 
     // Inisialisasi galeri
     document.addEventListener('DOMContentLoaded', () => {
         renderNostalgiaGallery();
     });
-    
-    // Tambahan untuk iOS: beberapa versi memerlukan sentuhan ke elemen body untuk mengaktifkan audio
-    // Karena kita sudah pasang event listener global, itu sudah cukup.
-    // Minor: pastikan audio tidak berhenti saat layar terkunci (tidak bisa dihindari, tapi loop tetap)
 </script>
 
 <!-- 
-    ✨ PETUNJUK LENGKAP UNTUK PEMILIK WEBSITE ✨
+    ✨ PETUNJUK LENGKAP (untuk pemilik website) ✨
     
-    📁 STRUKTUR FOLDER YANG BENAR (agar semua perangkat kompatibel):
+    🎵 PERILAKU MUSIK (sesuai permintaan):
+        - Lagu diputar hanya 1 KALI (tidak looping / tidak berulang otomatis)
+        - Untuk memutar ULANG lagu, user harus MENGETUK (tap/klik) pada indikator musik
+        - Indikator musik berbentuk badge dengan teks yang berubah sesuai status:
+            * "tap untuk memutar musik" (saat diam / belum mulai)
+            * "♪ musik sedang mengalun ♪" (saat lagu berjalan)
+            * "🎵 lagu selesai • tap untuk putar ulang 🎵" (setelah lagu habis)
+        - Tidak ada tombol kontrol tambahan (play/pause/stop) selain indikator tersebut
+    
+    📁 STRUKTUR FOLDER YANG BENAR:
     
         root folder (tempat file HTML ini disimpan)
         │
         ├── index.html          (file halaman ini)
-        ├── music.mp3           (file musik, SEJAJAR dengan HTML, TIDAK dalam folder)
+        ├── music.mp3           (file musik, SEJAJAR dengan HTML)
         │
         └── img/                (folder untuk foto HEIC)
             ├── lanurpratamaa-20260501-0002.heic
@@ -589,50 +627,21 @@
             ├── lanurpratamaa-20260501-0004.heic
             └── lanurpratamaa-20260501-0005.heic
     
-    
-    🎵 MUSIK (KOMPATIBEL Android & iOS):
-        - Format file: MP3 (pastikan bitrate standar, 128-192kbps direkomendasikan)
-        - Nama file: music.mp3 (huruf kecil semua)
-        - Lokasi: SAMA dengan file HTML (tidak di dalam folder manapun)
-        - Perilaku:
-          * Android: autoplay akan berjalan setelah user menyentuh layar (kebijakan browser)
-          * iOS: membutuhkan sentuhan/gesture pertama, setelah itu musik berjalan mulus
-          * Desktop: sebagian besar autoplay langsung berjalan karena interaksi awal sudah ada
-        - Indikator akan berubah dari "bersiap" menjadi "mengalun lembut" saat musik mulai
-    
-    
     📸 FOTO (HEIC):
-        - Pastikan 4 file HEIC dengan nama persis seperti di atas tersimpan di folder "img"
+        - Pastikan 4 file HEIC dengan nama persis di atas tersimpan di folder "img"
         - HEIC didukung natively di Safari (iPhone/iPad/Mac)
-        - Untuk Android/Windows, jika tidak terbaca akan muncul placeholder lembut
-        - Rekomendasi: jika ingin kompatibilitas lebih luas, sediakan juga versi JPG/PNG
-    
-    
-    ⚙️ FITUR:
-        - Musik looping otomatis, volume 50% (pas untuk latar nostalgia)
-        - Galeri polaroid dengan efek vintage
-        - Lightbox saat foto diklik
-        - Tombol "putar kembali kenangan" hanya efek animasi (tidak mengganggu musik)
-        - TIDAK ADA tombol kontrol musik yang terlihat (minimalis sesuai permintaan)
-        - Indikator status musik halus sebagai panduan pengguna
-    
-    
-    🚀 TIPS UNTUK iOS / SAFARI:
-        - Pastikan file music.mp3 benar-benar ada dan tidak corrupt
-        - Pengguna harus menyentuh layar untuk pertama kali agar musik bisa berjalan (kebijakan Apple)
-        - Setelah disentuh, musik akan berjalan otomatis dan looping tanpa henti
-    
+        - Android/Windows: jika tidak terbaca akan muncul placeholder lembut
     
     🧪 TESTING:
-        - Buka file HTML di perangkat Android (Chrome) -> sentuh layar, musik berjalan
-        - Buka di iPhone (Safari) -> sentuh layar, musik berjalan
-        - Buka di laptop/desktop -> jika autoplay diblokir, klik di mana saja untuk memulai
+        - Buka di HP Android / iPhone -> tap indikator musik, lagu berjalan 1x
+        - Setelah lagu selesai, tap indikator lagi -> lagu diputar ulang dari awal
+        - Di desktop: klik indikator, lagu berjalan 1x, klik lagi untuk putar ulang
     
-    
-    💡 CATATAN PENTING:
-        - Tidak ada teks yang memperlihatkan struktur folder "img" atau lokasi file musik di UI
-        - Semua path teknis disembunyikan dari pengguna akhir
-        - Desain responsif dan nyaman di semua ukuran layar
+    💡 CATATAN:
+        - Tidak ada autoplay apapun agar sesuai keinginan "kalo mau muter lagi harus tap"
+        - Tidak ada teks yang memperlihatkan struktur folder teknis ke pengguna
+        - Semua path tersembunyi dari UI
+        - Desain responsif dan vintage
 -->
 </body>
 </html>
