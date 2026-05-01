@@ -280,12 +280,7 @@
             margin-top: 4px;
         }
         
-        /* Musik diputar secara otomatis, tanpa tombol apapun — semua kontrol audio disembunyikan */
-        .hidden-audio {
-            display: none;
-        }
-        
-        /* Indikator nostalgia kecil (opsional) bisa ditambahkan tap tidak mengganggu */
+        /* indikator musik nostalgia (hanya dekorasi) */
         .music-note {
             text-align: center;
             font-size: 0.75rem;
@@ -302,7 +297,7 @@
 
 <div class="container">
     <div class="hero">
-        <h1>📼 kenangan & irama</h1>
+        <h1>kenangan & irama</h1>
         <p>musik mengalun lembut, membawa waktu pulang</p>
         <div class="film-strip">
             <span></span><span></span><span></span><span></span><span></span><span></span>
@@ -327,11 +322,11 @@
 </div>
 
 <script>
-    // ======================= MUSIK OTOMATIS (tanpa tombol) ======================
-    // File musik di folder "mp3" dengan nama "music.mp3"
+    // ======================= MUSIK OTOMATIS (tanpa folder, tanpa tombol) ======================
+    // File musik "music.mp3" berada di direktori yang sama dengan file HTML (sejajar, tidak di dalam folder)
     // Musik akan mulai otomatis saat halaman dimuat (berusaha semaksimal mungkin mengatasi kebijakan autoplay browser)
     // Tidak ada kontrol yang ditampilkan ke user.
-    const audio = new Audio('mp3/music.mp3');
+    const audio = new Audio('music.mp3');
     audio.loop = true;      // mengulang untuk nuansa nostalgia panjang
     audio.volume = 0.55;    // volume lembut dan hangat
     
@@ -339,7 +334,7 @@
     function autoPlayMusic() {
         audio.play().then(() => {
             // berhasil autoplay
-            console.log("Musik nostalgia menyala.");
+            console.log("Musik nostalgia menyala (music.mp3)");
         }).catch((err) => {
             // Gagal karena kebijakan browser (misalnya user belum berinteraksi)
             // Kita pasang listener satu kali agar musik mulai saat sentuhan/klik pertama kali di halaman
@@ -366,11 +361,11 @@
     // Opsional: jika ada error load file musik (miss), tidak mengganggu antarmuka.
     audio.addEventListener('error', () => {
         // Tidak menampilkan pesan error yang mengganggu, hanya diam-diam di console
-        console.log("File musik tidak ditemukan di folder mp3/music.mp3, pastikan tersedia.");
+        console.log("File music.mp3 tidak ditemukan di direktori yang sama dengan file HTML.");
     });
     
     // ======================= GALERI FOTO (HEIC) ========================
-    // DATA FOTO: 4 gambar dengan format .heic. Tersimpan di folder img (tanpa menyebut di UI)
+    // DATA FOTO: 4 gambar dengan format .heic. Tersimpan di folder "img" 
     // Nama file sesuai permintaan: lanurpratamaa-20260501-0002.heic s/d 0005.heic
     const fotoKenangan = [
         {
@@ -495,29 +490,31 @@
 </script>
 
 <!-- 
-    ✨ Petunjuk untuk pemilik halaman (tidak tampil di layar pengguna):
+    ✨ PETUNJUK UNTUK PEMILIK WEBSITE (tidak terlihat oleh pengguna):
     
     1. FOTO (format HEIC):
+       - Buat folder dengan nama "img" (sejajar dengan file HTML)
        - Letakkan 4 file HEIC di dalam folder "img" dengan nama persis:
-         lanurpratamaa-20260501-0002.heic
-         lanurpratamaa-20260501-0003.heic
-         lanurpratamaa-20260501-0004.heic
-         lanurpratamaa-20260501-0005.heic
+         ▪ lanurpratamaa-20260501-0002.heic
+         ▪ lanurpratamaa-20260501-0003.heic
+         ▪ lanurpratamaa-20260501-0004.heic
+         ▪ lanurpratamaa-20260501-0005.heic
        
-    2. MUSIK:
-       - Letakkan file musik (mp3) di dalam folder "mp3" dengan nama "music.mp3"
-       - Musik akan otomatis diputar saat halaman dimuat (dengan usaha melewati kebijakan autoplay browser)
-       - Jika browser menghalangi autoplay, musik akan mulai saat pengguna pertama kali berinteraksi dengan halaman (klik / sentuh / keyboard),
-         tanpa perlu tombol apapun. Pengguna tetap merasakan musik menyala secara alami.
-     
+    2. MUSIK (format MP3):
+       - Letakkan file "music.mp3" di DIREKTORI YANG SAMA (SEJAJAR) dengan file HTML ini.
+       - TIDAK perlu folder "mp3" lagi.
+       - Musik akan otomatis diputar saat halaman dimuat.
+       - Jika browser memblokir autoplay (kebijakan modern), musik akan mulai saat pengguna pertama kali 
+         berinteraksi dengan halaman (klik, sentuh, atau tekan tombol keyboard) — tanpa tombol kontrol apapun.
+       
     3. DESAIN:
-       - Tidak ada satupun teks yang memperlihatkan folder "img", "mp3", atau struktur teknis lainnya.
-       - Semua tombol kontrol musik (play, stop, volume, dll) telah dihilangkan sepenuhnya.
-       - Suasana vintage dan nostalgia tetap menjadi fokus utama.
+       - Tidak ada tombol kontrol musik (play, stop, volume) yang terlihat.
+       - Tidak ada teks yang memperlihatkan struktur folder "img" atau lokasi file.
+       - Nuansa vintage dan nostalgia tetap menjadi fokus utama.
        
     4. KOMPATIBILITAS HEIC:
-       - Browser Safari di perangkat Apple menampilkan HEIC dengan baik.
-       - Chrome / Edge di Windows mungkin perlu ekstensi atau decoder HEIC tambahan.
+       - Browser Safari (Apple) mendukung HEIC secara native.
+       - Chrome / Edge di Windows mungkin perlu ekstensi tambahan.
        - Jika gambar gagal dimuat, akan muncul placeholder halus tanpa menyebut path teknis.
 -->
 </body>
