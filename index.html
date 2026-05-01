@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Galeri Nostalgia • Lembaran Rindu & Irama</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Galeri Nostalgia • Kenangan & Irama</title>
     <style>
         * {
             margin: 0;
@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* wadah bernuansa album tua */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -30,7 +29,6 @@
             border: 1px solid #f7e5d0;
         }
 
-        /* header bernuansa kenangan */
         .hero {
             text-align: center;
             margin-bottom: 2rem;
@@ -62,7 +60,6 @@
             box-shadow: inset 0 0 2px #ffefd0, 0 4px 6px #0000001a;
         }
 
-        /* strip dekoratif */
         .film-strip {
             display: flex;
             justify-content: center;
@@ -78,30 +75,23 @@
             border-radius: 20px;
         }
 
-        /* galeri dengan gaya polaroid */
-        .gallery {
+        .gallery-photo {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 2.5rem;
+            gap: 2rem;
             margin: 2rem 0 1rem;
         }
 
         .polaroid {
             background: #fffcf5;
-            width: 290px;
+            width: 280px;
             border-radius: 16px 16px 28px 28px;
             box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(255, 250, 210, 0.6) inset;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             cursor: pointer;
             transform: rotate(0deg);
         }
-
-        /* efek miring vintage */
-        .polaroid:nth-child(1) { transform: rotate(-1.3deg); }
-        .polaroid:nth-child(2) { transform: rotate(2deg); }
-        .polaroid:nth-child(3) { transform: rotate(-1deg); }
-        .polaroid:nth-child(4) { transform: rotate(1.5deg); }
 
         .polaroid:hover {
             transform: scale(1.03) rotate(0deg);
@@ -125,12 +115,11 @@
             background: #b6896b;
         }
 
-        /* caption: hanya menampilkan kenangan */
         .caption {
-            padding: 1rem 1rem 1.4rem;
+            padding: 0.8rem 0.8rem 1.2rem;
             text-align: center;
             font-family: 'Caveat', 'Segoe UI', cursive;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
             color: #4f2f18;
             background: #fffcf0;
@@ -140,17 +129,16 @@
         }
 
         .caption .nostalgia-tag {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             background: #efdecb;
-            padding: 4px 10px;
+            padding: 3px 10px;
             border-radius: 30px;
             display: inline-block;
-            margin-top: 6px;
+            margin-top: 5px;
             color: #744d2e;
             font-family: monospace;
         }
 
-        /* footer */
         .footer-note {
             text-align: center;
             margin-top: 3rem;
@@ -183,7 +171,6 @@
             transform: scale(0.97);
         }
 
-        /* lightbox modal */
         .lightbox {
             display: none;
             position: fixed;
@@ -243,44 +230,6 @@
             }
         }
 
-        @media (max-width: 760px) {
-            .container {
-                padding: 1.5rem 1rem;
-            }
-            .hero h1 {
-                font-size: 2.3rem;
-            }
-            .polaroid {
-                width: 270px;
-            }
-            .gallery {
-                gap: 1.8rem;
-            }
-        }
-
-        @media (max-width: 580px) {
-            .polaroid {
-                width: 90%;
-                max-width: 310px;
-            }
-        }
-
-        .container {
-            background-image: radial-gradient(circle at 25% 40%, rgba(170,130,80,0.08) 2%, transparent 2.5%);
-            background-size: 28px 28px;
-        }
-
-        .soft-warning {
-            font-size: 10px;
-            color: #a5724b;
-            background: #fff1e0;
-            border-radius: 20px;
-            padding: 2px 8px;
-            display: inline-block;
-            margin-top: 4px;
-        }
-        
-        /* indikator musik yang bisa diklik (tap untuk memutar ulang) */
         .music-player-tap {
             text-align: center;
             margin: 8px auto 10px;
@@ -312,23 +261,43 @@
             transform: scale(0.98);
         }
         
-        .music-icon {
-            font-size: 1.2rem;
-        }
-        
-        .music-text {
-            letter-spacing: 0.5px;
-        }
-        
-        /* efek detak kecil saat musik dimainkan */
-        @keyframes gentlePulse {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        
         .music-active {
             background: #e6d5bd;
             box-shadow: 0 0 8px rgba(150, 100, 50, 0.3);
+        }
+
+        .soft-warning {
+            font-size: 10px;
+            color: #a5724b;
+            background: #fff1e0;
+            border-radius: 20px;
+            padding: 2px 8px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            .polaroid {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .polaroid {
+                width: 90%;
+                max-width: 290px;
+            }
+        }
+
+        .container {
+            background-image: radial-gradient(circle at 25% 40%, rgba(170,130,80,0.08) 2%, transparent 2.5%);
+            background-size: 28px 28px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
@@ -337,14 +306,14 @@
 
 <div class="container">
     <div class="hero">
-        <h1>📼 kenangan & irama</h1>
-        <p>musik mengalun sebentar, sentuh lagi untuk ulang</p>
+        <h1>kenangan TJKT III</h1>
+        <p>foto, dan cerita dalam bingkai</p>
         <div class="film-strip">
             <span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
     </div>
 
-    <!-- Musik: diputar 1x saja, harus tap indikator untuk memutar ulang -->
+    <!-- Musik: 1x putar, tap untuk memutar ulang -->
     <div class="music-player-tap">
         <div class="music-indicator" id="musicTapButton">
             <span class="music-icon">🎵</span>
@@ -353,7 +322,8 @@
         </div>
     </div>
 
-    <div class="gallery" id="galleryNostalgia"></div>
+    <!-- GALERI FOTO (14 foto, tanpa teks HEIC/JPG) -->
+    <div class="gallery-photo" id="galleryNostalgia"></div>
 
     <div class="footer-note">
         <div>🎞️ polaroid vintage • hati yang tersimpan</div>
@@ -362,7 +332,7 @@
     </div>
 </div>
 
-<!-- Lightbox kenangan -->
+<!-- Lightbox untuk foto -->
 <div id="lightboxModal" class="lightbox">
     <div class="lightbox-content">
         <img id="lightboxImg" src="" alt="memori terbuka">
@@ -372,135 +342,91 @@
 
 <script>
     // ======================= MUSIK (1x putar, tap untuk ulang) ======================
-    // File musik "music.mp3" berada di direktori yang SAMA dengan file HTML
-    // Musik diputar hanya 1 kali (tidak looping)
-    // User harus mengetuk indikator untuk memutar ulang setelah musik selesai atau sebelum dimulai
-    
     const audio = new Audio('music.mp3');
-    audio.loop = false;          // HANYA 1 KALI PUTAR, tidak looping
-    audio.volume = 0.55;         // volume nyaman untuk semua perangkat
+    audio.loop = false;
+    audio.volume = 0.55;
     audio.preload = 'auto';
     
     let isPlaying = false;
-    let hasEnded = false;         // apakah lagu sudah selesai diputar
+    let hasEnded = false;
     
     const musicTapBtn = document.getElementById('musicTapButton');
     const statusTextSpan = document.getElementById('musicStatusText');
     
-    // Fungsi update tampilan teks dan gaya
     function updateMusicUI() {
         if (!statusTextSpan) return;
-        
         if (isPlaying) {
-            statusTextSpan.innerHTML = '♪ musik sedang mengalun ♪';
+            statusTextSpan.innerHTML = '♪ musik sedang mengalun';
             musicTapBtn.classList.add('music-active');
         } else if (hasEnded) {
             statusTextSpan.innerHTML = '🎵 lagu selesai • tap untuk putar ulang 🎵';
             musicTapBtn.classList.remove('music-active');
         } else {
-            statusTextSpan.innerHTML = '🎵 tap untuk memutar musik 🎵';
+            statusTextSpan.innerHTML = 'tap untuk memutar suara! 🎵';
             musicTapBtn.classList.remove('music-active');
         }
     }
     
-    // Fungsi untuk memutar musik (reset posisi ke awal)
     function playMusic() {
-        // Jika musik sedang diputar, kita tetap ulang dari awal (perilaku tap: putar ulang / restart)
-        // Tapi sesuai keinginan: "kalo mau muter lagi harus tap" -> jadi tap akan memutar ulang dari awal.
-        // Jika musik sedang berjalan, tap akan menghentikan lalu memutar ulang? lebih intuitif: restart lagu.
-        // Namun agar tidak membingungkan, tap akan selalu memulai dari awal (reset).
-        
-        // Matikan dulu jika sedang berjalan
         if (isPlaying) {
             audio.pause();
             isPlaying = false;
         }
-        
-        // Reset posisi ke awal
         audio.currentTime = 0;
-        
-        // Mulai putar
         audio.play()
             .then(() => {
                 isPlaying = true;
                 hasEnded = false;
                 updateMusicUI();
-                console.log("Musik diputar (1x, tidak looping)");
             })
             .catch((err) => {
-                console.warn("Gagal memutar musik:", err);
-                // Jika gagal karena interaksi belum terjadi (misal di iOS), indikator akan tetap bisa dicoba lagi
+                console.warn("Musik gagal diputar:", err);
                 isPlaying = false;
                 updateMusicUI();
-                // Tampilkan pesan halus
                 statusTextSpan.innerHTML = '🎵 sentuh lagi untuk mulai 🎵';
-                setTimeout(() => {
-                    if (!isPlaying && !hasEnded) updateMusicUI();
-                }, 1200);
+                setTimeout(() => { if (!isPlaying && !hasEnded) updateMusicUI(); }, 1200);
             });
     }
     
-    // Event ketika lagu selesai (ended)
     audio.addEventListener('ended', () => {
         isPlaying = false;
         hasEnded = true;
         updateMusicUI();
-        console.log("Musik selesai (1x putar). Tap indikator untuk putar ulang.");
     });
     
-    // Event error handling jika file tidak ada
-    audio.addEventListener('error', (e) => {
-        console.warn("File music.mp3 tidak ditemukan, pastikan file ada di folder yang sama dengan HTML");
-        if (statusTextSpan) {
-            statusTextSpan.innerHTML = '⚠️ file musik tidak tersedia ⚠️';
-        }
+    audio.addEventListener('error', () => {
+        if (statusTextSpan) statusTextSpan.innerHTML = '⚠️ file musik tidak tersedia ⚠️';
         isPlaying = false;
         hasEnded = false;
     });
     
-    // Tombol indikator musik: fungsi tap / klik untuk memutar ulang atau memulai
     musicTapBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        // Jika musik sedang diputar, tap akan mengulang dari awal (play from start)
-        // Sesuai konsep "lagu diputar cuma 1x, kalo mau muter lagi harus tap"
         playMusic();
     });
     
-    // Inisialisasi UI pertama kali
     updateMusicUI();
     
-    // Opsional: mencoba autoplay ringan? Tidak, biar murni tap dulu agar sesuai keinginan.
-    // Tapi beberapa pengguna mungkin berharap bisa langsung, namun spesifikasi "lagu diputar cuma 1x, kalo mau muter lagi harus tap"
-    // Artinya tidak otomatis, harus tap. Jadi kita tidak melakukan autoplay sama sekali.
-    // Supaya lebih ramah, kita hanya tampilkan indikator tap untuk memulai.
-    
-    // Tambahan: ketika halaman dimuat, tidak ada suara apapun sampai user tap indikator.
-    console.log("Mode musik: 1x putar, tap indikator untuk memutar ulang / mulai");
-    
-    // ======================= GALERI FOTO (HEIC) ========================
-    // DATA FOTO: 4 gambar dengan format .heic. Tersimpan di folder "img" 
-    // Nama file sesuai permintaan: lanurpratamaa-20260501-0002.heic s/d 0005.heic
-    const fotoKenangan = [
-        {
-            namaTeknis: "lanurpratamaa-20260501-0002.heic",
-            caption: "🌤️ senja yang tak pernah usai",
-            alt: "bingkai nostalgia pertama"
-        },
-        {
-            namaTeknis: "lanurpratamaa-20260501-0003.heic",
-            caption: "🎞️ tawa & rintik hujan",
-            alt: "bingkai kenangan kedua"
-        },
-        {
-            namaTeknis: "lanurpratamaa-20260501-0004.heic",
-            caption: "📼 memori di balik kabut",
-            alt: "bingkai nostalgia ketiga"
-        },
-        {
-            namaTeknis: "lanurpratamaa-20260501-0005.heic",
-            caption: "✨ cahaya dari masa lalu",
-            alt: "bingkai kenangan keempat"
-        }
+    // ======================= GALERI FOTO (14 FOTO, TANPA TEKS HEIC/JPG) ========================
+    // Daftar semua foto: caption hanya kata-kata nostalgia, tanpa embel-embel format file
+    const daftarFoto = [
+        // 4 HEIC
+        { namaFile: "lanurpratamaa-20260501-0002.heic", caption: "🌤️ senja yang tak pernah usai", alt: "kenangan 0002" },
+        { namaFile: "lanurpratamaa-20260501-0003.heic", caption: "🎞️ tawa & rintik hujan", alt: "kenangan 0003" },
+        { namaFile: "lanurpratamaa-20260501-0004.heic", caption: "⭐ bintang yang tersenyum", alt: "kenangan 0004" },
+        { namaFile: "lanurpratamaa-20260501-0005.heic", caption: "✨ cahaya dari masa lalu", alt: "kenangan 0005" },
+        // 3 JPG sebelumnya
+        { namaFile: "arfaprmd-20260501-0001.jpg", caption: "🌅 pelangi kenangan", alt: "foto jpg pertama" },
+        { namaFile: "arfaprmd-20260501-0002.jpg", caption: "🏞️ senja kedua yang abadi", alt: "foto jpg kedua" },
+        { namaFile: "meimei_me1-20260501-0001.jpg", caption: "🌸 senyum yang tersimpan", alt: "foto meimei" },
+        // 7 foto baru (foto1.jpg s/d foto7.jpg)
+        { namaFile: "foto1.jpg", caption: "📸 lembar kenangan pertama", alt: "foto 1" },
+        { namaFile: "foto2.jpg", caption: "🍂 cerita di balik senyum", alt: "foto 2" },
+        { namaFile: "foto3.jpg", caption: "🌻 hangatnya waktu", alt: "foto 3" },
+        { namaFile: "foto4.jpg", caption: "⭐ senyuman didalam ruang", alt: "foto 4" },
+        { namaFile: "foto5.jpg", caption: "🍃 desir kenangan", alt: "foto 5" },
+        { namaFile: "foto6.jpg", caption: "🎈 tawa yang abadi", alt: "foto 6" },
+        { namaFile: "foto7.jpg", caption: "💫 kita dan ruang waktu", alt: "foto 7" }
     ];
 
     const galleryContainer = document.getElementById('galleryNostalgia');
@@ -508,16 +434,23 @@
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCaption = document.getElementById('lightboxCaption');
 
-    function renderNostalgiaGallery() {
+    // Fungsi untuk menghasilkan rotasi random yang konsisten per indeks
+    function getRandomRotation(idx) {
+        const rotations = [-1.8, -1.2, -0.7, 0.5, 1.0, 1.6, 2.0, -1.5, -0.3, 0.8, 1.3, 1.9, -0.9, 0.3];
+        return rotations[idx % rotations.length];
+    }
+
+    function renderGallery() {
         galleryContainer.innerHTML = '';
         
-        fotoKenangan.forEach((foto, idx) => {
-            // path teknis: img/ + .heic (tidak akan tampil di UI)
-            const technicalPath = `img/${foto.namaTeknis}`;
-            
+        daftarFoto.forEach((foto, idx) => {
+            const technicalPath = `img/${foto.namaFile}`;
             const polaroidCard = document.createElement('div');
             polaroidCard.className = 'polaroid';
             polaroidCard.setAttribute('data-idx', idx);
+            // berikan rotasi individual
+            const rotateVal = getRandomRotation(idx);
+            polaroidCard.style.transform = `rotate(${rotateVal}deg)`;
             
             polaroidCard.innerHTML = `
                 <div class="photo-frame">
@@ -537,13 +470,12 @@
                 </div>
             `;
             
-            polaroidCard.addEventListener('click', (e) => {
-                const imageElement = polaroidCard.querySelector('.photo-frame img');
-                let srcImage = imageElement.src;
-                const captionIndah = foto.caption;
-                let additionalInfo = (srcImage.includes('data:image/svg')) ? ' (sedang merangkai memori)' : '';
+            polaroidCard.addEventListener('click', () => {
+                const imgElement = polaroidCard.querySelector('.photo-frame img');
+                let srcImage = imgElement.src;
+                let additionalInfo = (srcImage.includes('data:image/svg')) ? ' (file belum tersedia)' : '';
                 lightboxImg.src = srcImage;
-                lightboxCaption.innerHTML = `📷 ${captionIndah} ${additionalInfo}`;
+                lightboxCaption.innerHTML = `📷 ${foto.caption} ${additionalInfo}`;
                 lightbox.classList.add('active');
             });
             
@@ -564,7 +496,7 @@
         }
     });
 
-    // Tombol nostalgia efek lembut (tidak mempengaruhi musik, hanya animasi foto)
+    // Tombol nostalgia efek lembut
     const nostalgicBtn = document.getElementById('refreshMoodBtn');
     nostalgicBtn.addEventListener('click', () => {
         const allCards = document.querySelectorAll('.polaroid');
@@ -572,7 +504,8 @@
             card.style.transition = 'all 0.12s';
             card.style.transform = `scale(0.98) rotate(${Math.random() * 2 - 1}deg)`;
             setTimeout(() => {
-                card.style.transform = '';
+                const idx = parseInt(card.getAttribute('data-idx')) || 0;
+                card.style.transform = `rotate(${getRandomRotation(idx)}deg)`;
             }, 180);
         });
         const toastMsg = document.createElement('div');
@@ -598,50 +531,50 @@
 
     // Inisialisasi galeri
     document.addEventListener('DOMContentLoaded', () => {
-        renderNostalgiaGallery();
+        renderGallery();
+        console.log('✅ Galeri siap: 14 foto kenangan di folder img');
     });
 </script>
 
 <!-- 
-    ✨ PETUNJUK LENGKAP (untuk pemilik website) ✨
-    
-    🎵 PERILAKU MUSIK (sesuai permintaan):
-        - Lagu diputar hanya 1 KALI (tidak looping / tidak berulang otomatis)
-        - Untuk memutar ULANG lagu, user harus MENGETUK (tap/klik) pada indikator musik
-        - Indikator musik berbentuk badge dengan teks yang berubah sesuai status:
-            * "tap untuk memutar musik" (saat diam / belum mulai)
-            * "♪ musik sedang mengalun ♪" (saat lagu berjalan)
-            * "🎵 lagu selesai • tap untuk putar ulang 🎵" (setelah lagu habis)
-        - Tidak ada tombol kontrol tambahan (play/pause/stop) selain indikator tersebut
+    ✨ PETUNJUK LENGKAP UNTUK PEMILIK WEBSITE ✨
     
     📁 STRUKTUR FOLDER YANG BENAR:
     
-        root folder (tempat file HTML ini disimpan)
+        root folder (tempat file HTML)
         │
-        ├── index.html          (file halaman ini)
-        ├── music.mp3           (file musik, SEJAJAR dengan HTML)
+        ├── index.html
+        ├── music.mp3                (file musik, SEJAJAR dengan HTML)
         │
-        └── img/                (folder untuk foto HEIC)
+        └── img/                     (folder untuk semua gambar)
             ├── lanurpratamaa-20260501-0002.heic
             ├── lanurpratamaa-20260501-0003.heic
             ├── lanurpratamaa-20260501-0004.heic
-            └── lanurpratamaa-20260501-0005.heic
+            ├── lanurpratamaa-20260501-0005.heic
+            ├── arfaprmd-20260501-0001.jpg
+            ├── arfaprmd-20260501-0002.jpg
+            ├── meimei_me1-20260501-0001.jpg
+            ├── foto1.jpg
+            ├── foto2.jpg
+            ├── foto3.jpg
+            ├── foto4.jpg
+            ├── foto5.jpg
+            ├── foto6.jpg
+            └── foto7.jpg
     
-    📸 FOTO (HEIC):
-        - Pastikan 4 file HEIC dengan nama persis di atas tersimpan di folder "img"
-        - HEIC didukung natively di Safari (iPhone/iPad/Mac)
-        - Android/Windows: jika tidak terbaca akan muncul placeholder lembut
+    🎵 MUSIK:
+        - Hanya diputar 1 KALI (tidak looping)
+        - Untuk memutar ulang, TAP indikator musik (badge)
     
-    🧪 TESTING:
-        - Buka di HP Android / iPhone -> tap indikator musik, lagu berjalan 1x
-        - Setelah lagu selesai, tap indikator lagi -> lagu diputar ulang dari awal
-        - Di desktop: klik indikator, lagu berjalan 1x, klik lagi untuk putar ulang
+    📸 FOTO (total 14 foto):
+        - Semua disimpan di folder "img"
+        - Caption pada setiap foto hanya berisi kata-kata nostalgia (tanpa embel-embel HEIC/JPG)
+        - Klik pada foto akan membuka lightbox untuk melihat lebih besar
     
-    💡 CATATAN:
-        - Tidak ada autoplay apapun agar sesuai keinginan "kalo mau muter lagi harus tap"
-        - Tidak ada teks yang memperlihatkan struktur folder teknis ke pengguna
-        - Semua path tersembunyi dari UI
-        - Desain responsif dan vintage
+    💡 SEMUA PATH TEKNIS TERSEMBUNYI dari tampilan pengguna.
+    - Tidak ada teks yang memperlihatkan folder "img" atau ekstensi file
+    - Tampilan hanya menampilkan kenangan dan nostalgia yang indah
+    - Setiap kartu foto memiliki efek polaroid vintage dengan rotasi unik
 -->
 </body>
 </html>
