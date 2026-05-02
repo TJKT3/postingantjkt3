@@ -11,11 +11,35 @@
             box-sizing: border-box;
         }
 
+        /* ========== ANIMASI MASUK HALAMAN ========== */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         body {
             background: linear-gradient(145deg, #ebdfcc 0%, #cfb693 100%);
             font-family: 'Segoe UI', 'Inter', 'Poppins', system-ui, -apple-system, 'Georgia', serif;
             padding: 2rem 1.5rem;
             min-height: 100vh;
+            animation: fadeInScale 0.6s ease-out;
         }
 
         .container {
@@ -29,7 +53,17 @@
             border: 1px solid #f7e5d0;
         }
 
-        /* ========== PROFIL SISWA (bagian atas) ========== */
+        /* Animasi elemen satu per satu */
+        .hero, .music-player-tap, .profile-section, .gallery-photo, .footer-note {
+            animation: slideUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        .hero { animation-delay: 0.05s; }
+        .music-player-tap { animation-delay: 0.15s; }
+        .profile-section { animation-delay: 0.25s; }
+        .gallery-photo { animation-delay: 0.4s; }
+        .footer-note { animation-delay: 0.55s; }
+
         .profile-section {
             text-align: center;
             margin-bottom: 2rem;
@@ -63,7 +97,6 @@
             transform: scale(0.98);
         }
 
-        /* Profil card yang bisa dibuka/tutup - dengan scroll area terbatas */
         .profile-card {
             margin-top: 1.5rem;
             margin-bottom: 1rem;
@@ -81,7 +114,6 @@
             scrollbar-width: thin;
         }
         
-        /* Custom scroll cantik */
         .profile-card::-webkit-scrollbar {
             width: 5px;
         }
@@ -96,18 +128,7 @@
 
         .profile-card.show {
             display: block;
-            animation: fadeInUp 0.4s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            animation: slideUp 0.35s ease forwards;
         }
 
         .instagram-link {
@@ -129,10 +150,6 @@
             width: 100%;
         }
         
-        .instagram-link:last-child {
-            margin-bottom: 6px;
-        }
-
         .instagram-link:hover {
             background: #e9d9c2;
             transform: translateY(-2px);
@@ -143,7 +160,6 @@
             font-size: 1.4rem;
         }
         
-        /* hint kecil banyak akun */
         .profile-hint {
             font-size: 0.7rem;
             color: #a07b53;
@@ -297,6 +313,29 @@
             transform: scale(0.97);
         }
 
+        /* ========== LIGHTBOX DENGAN ANIMASI YANG BAGUS ========== */
+        @keyframes lightboxZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes lightboxFadeIn {
+            from {
+                backdrop-filter: blur(0px);
+                background: rgba(0, 0, 0, 0);
+            }
+            to {
+                backdrop-filter: blur(12px);
+                background: rgba(0, 0, 0, 0.86);
+            }
+        }
+
         .lightbox {
             display: none;
             position: fixed;
@@ -314,6 +353,7 @@
 
         .lightbox.active {
             display: flex;
+            animation: lightboxFadeIn 0.25s ease forwards;
         }
 
         .lightbox-content {
@@ -323,13 +363,13 @@
             padding: 12px;
             border-radius: 28px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            animation: fadeZoom 0.25s ease;
+            animation: lightboxZoomIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
         }
 
         .lightbox-content img {
             width: 100%;
             height: auto;
-            max-height: 75vh;
+            max-height: 70vh;
             object-fit: contain;
             border-radius: 20px;
         }
@@ -345,14 +385,26 @@
             font-weight: 500;
         }
 
-        @keyframes fadeZoom {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
+        /* Animasi keluar lightbox */
+        .lightbox.closing {
+            animation: lightboxFadeOut 0.2s ease forwards;
+        }
+        
+        .lightbox.closing .lightbox-content {
+            animation: lightboxZoomOut 0.2s ease forwards;
+        }
+        
+        @keyframes lightboxFadeOut {
             to {
-                opacity: 1;
-                transform: scale(1);
+                backdrop-filter: blur(0px);
+                background: rgba(0, 0, 0, 0);
+            }
+        }
+        
+        @keyframes lightboxZoomOut {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
             }
         }
 
@@ -438,17 +490,14 @@
 <body>
 
 <div class="container">
-    <!-- ========== BAGIAN PROFIL SISWA (ATAS) - BISA TUTUP/BUKA dengan SCROLL AREA ========== -->
     <div class="profile-section">
         <button class="profile-tap-btn" id="tapProfileBtn">
             👥 Tap Profil Keluarga TJKT III
             <span id="arrowIcon">▼</span>
         </button>
         
-        <!-- Profil card dengan scroll terbatas, hanya menampilkan semua akun tapi sudah terkompresi rapi -->
         <div id="studentProfile" class="profile-card">
             <div class="profile-hint">✨ 22 anggota kelas — yang terverifikasi ig ✨</div>
-            <!-- Daftar semua akun instagram dalam list scroll yang ringkas -->
             <a href="https://www.instagram.com/rizkyfirdaus177/" target="_blank" rel="noopener noreferrer" class="instagram-link">
                 <span class="instagram-icon">📷</span> @rizkyfirdaus177
             </a>
@@ -551,7 +600,6 @@
         </div>
     </div>
 
-    <!-- Musik: 1x putar, tap untuk memutar ulang -->
     <div class="music-player-tap">
         <div class="music-indicator" id="musicTapButton">
             <span class="music-icon">🎵</span>
@@ -560,7 +608,6 @@
         </div>
     </div>
 
-    <!-- GALERI FOTO (14 foto, tanpa teks HEIC/JPG) -->
     <div class="gallery-photo" id="galleryNostalgia"></div>
 
     <div class="footer-note">
@@ -570,7 +617,6 @@
     </div>
 </div>
 
-<!-- Lightbox untuk foto -->
 <div id="lightboxModal" class="lightbox">
     <div class="lightbox-content">
         <img id="lightboxImg" src="" alt="memori terbuka">
@@ -579,7 +625,7 @@
 </div>
 
 <script>
-    // ======================= MUSIK (1x putar, tap untuk ulang) ======================
+    // ======================= MUSIK ======================
     const audio = new Audio('music.mp3');
     audio.loop = false;
     audio.volume = 0.55;
@@ -645,54 +691,51 @@
     
     updateMusicUI();
     
-    // ======================= PROFIL SISWA (Tap Buka/Tutup + Gulir & Scroll Area) ========================
+    // ======================= PROFIL SISWA ========================
     const tapBtn = document.getElementById('tapProfileBtn');
     const profileCard = document.getElementById('studentProfile');
     const arrowIcon = document.getElementById('arrowIcon');
     let isProfileOpen = false;
     
-    // Awalnya profil tertutup
     profileCard.classList.remove('show');
     
     tapBtn.addEventListener('click', () => {
         if (!isProfileOpen) {
-            // BUKA PROFIL
             profileCard.classList.add('show');
             isProfileOpen = true;
             arrowIcon.innerHTML = '▲';
-            // Gulir ke profil dengan smooth scroll agar pengguna bisa melihat panel terbuka
             setTimeout(() => {
                 profileCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 50);
-            // Efek highlight sementara
             profileCard.style.transition = 'all 0.3s';
             profileCard.style.boxShadow = '0 0 0 3px #dbb87a, 0 12px 28px rgba(0,0,0,0.2)';
             setTimeout(() => {
                 profileCard.style.boxShadow = '';
             }, 1000);
         } else {
-            // TUTUP PROFIL
             profileCard.classList.remove('show');
             isProfileOpen = false;
             arrowIcon.innerHTML = '▼';
         }
     });
     
-    // ======================= GALERI FOTO (14 FOTO, TANPA TEKS HEIC/JPG) ========================
+    // ======================= GALERI FOTO ========================
     const daftarFoto = [
-        // 4 HEIC
+        { namaFile: "bareng.jpeg", caption: "📸 lembar kenangan pertama", alt: "bersama" },
+        { namaFile: "bareng1.jpeg", caption: "📸 lembar kenangan Kedua", alt: "bersama" },
+        { namaFile: "grup.jpeg", caption: "🌤️ tempat yang abadi", alt: "bersama" },
         { namaFile: "lanurpratamaa-20260501-0002.heic", caption: "🌤️ senja yang tak pernah usai", alt: "kenangan 0002" },
         { namaFile: "lanurpratamaa-20260501-0003.heic", caption: "🎞️ tawa dibalik bingkai", alt: "kenangan 0003" },
         { namaFile: "lanurpratamaa-20260501-0004.heic", caption: "📼 memori di balik kabut", alt: "kenangan 0004" },
         { namaFile: "lanurpratamaa-20260501-0005.heic", caption: "✨ cahaya dari masa lalu", alt: "kenangan 0005" },
-        // 3 JPG sebelumnya
         { namaFile: "arfaprmd-20260501-0001.jpg", caption: "🌅 pelangi kenangan", alt: "foto jpg pertama" },
         { namaFile: "arfaprmd-20260501-0002.jpg", caption: "🏞️ senja kedua yang abadi", alt: "foto jpg kedua" },
         { namaFile: "meimei_me1-20260501-0001.jpg", caption: "🌸 senyum yang tersimpan", alt: "foto meimei" },
-        // 7 foto baru (foto1.jpg s/d foto7.jpg)
-        { namaFile: "foto1.jpg", caption: "📸 lembar kenangan pertama", alt: "foto 1" },
+        { namaFile: "foto1.jpg", caption: "", alt: "foto 1" },
         { namaFile: "foto2.jpg", caption: "🍂 cerita di balik senyum", alt: "foto 2" },
-        { namaFile: "foto3.jpg", caption: "🌻 hangatnya waktu", alt: "foto 3" },
+        { namaFile: "grup1.jpeg", caption: "🌤️ kenangan dibawah matahari", alt: "bersama" },
+        { namaFile: "foto3.jpg", caption: "🌻 ruang dan waktu", alt: "foto 3" },
+        { namaFile: "grup2.jpeg", caption: "🌻 hangatnya waktu", alt: "foto 3" },
         { namaFile: "foto4.jpg", caption: "⭐ bintang yang tersenyum", alt: "foto 4" },
         { namaFile: "foto5.jpg", caption: "🍃 desir kenangan", alt: "foto 5" },
         { namaFile: "foto6.jpg", caption: "🎈 tawa yang abadi", alt: "foto 6" },
@@ -707,6 +750,13 @@
     function getRandomRotation(idx) {
         const rotations = [-1.8, -1.2, -0.7, 0.5, 1.0, 1.6, 2.0, -1.5, -0.3, 0.8, 1.3, 1.9, -0.9, 0.3];
         return rotations[idx % rotations.length];
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add('closing');
+        setTimeout(() => {
+            lightbox.classList.remove('active', 'closing');
+        }, 200);
     }
 
     function renderGallery() {
@@ -744,6 +794,7 @@
                 let additionalInfo = (srcImage.includes('data:image/svg')) ? ' (file belum tersedia)' : '';
                 lightboxImg.src = srcImage;
                 lightboxCaption.innerHTML = `📷 ${foto.caption} ${additionalInfo}`;
+                lightbox.classList.remove('closing');
                 lightbox.classList.add('active');
             });
             
@@ -753,13 +804,13 @@
 
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox || e.target === lightboxModal) {
-            lightbox.classList.remove('active');
+            closeLightbox();
         }
     });
     
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-            lightbox.classList.remove('active');
+            closeLightbox();
         }
     });
 
@@ -797,7 +848,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         renderGallery();
-        console.log('✅ Galeri siap: 14 foto kenangan + profil scrollable');
+        console.log('✅ Galeri siap dengan animasi masuk & lightbox keren');
     });
 </script>
 </body>
